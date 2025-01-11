@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Left Panel with Scrollable Right Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            background-color: #F4F4F4;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-card {
+            background-color: #2C2C2E;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .main-card h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #FFF;
+        }
+        
+        .main-card p {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #CCC;
+        }        
+
+        .left-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #FF5864;
+            padding: 20px;
+            width: 400px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #FFFFFF;
+            color: #FF5864;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .line-separator {
+            width: 100%;
+            height: 2.5px;
+            background-color: #2C2C2E;
+            margin: 7px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            margin: 10px 0;
+        }
+
+        .nav-item a {
+            color: #FFFFFF;
+            font-size: 18px;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-item a:hover {
+            background-color: #2C2C2E;
+        }
+
+        .right-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; 
+            margin-left: 420px;
+            background-color: #1C1C1E;
+            padding: 20px;
+            border-radius: 0px;
+            flex-grow: 1;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+        }
+
+        .main-card {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            background-color: #2C2C2E;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+
+        .main-card img {
+            width: 100%;
+            max-height: none;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+
+        .main-card h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+
+        .main-card p {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .chat-menu {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 360px;
+            background-color: rgb(46, 46, 46);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+        }
+
+        .chat__item__container {
+            background-color: #FF5864;
+            padding: 20px;
+            border-radius: 10px;
+            height: 300px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #FF5864 #f5f5f5;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #id_message_send_input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #id_message_send_button {
+            padding: 5px 10px;
+            background-color: #075e54;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .chat-message {
+            background-color: #e4f9f5;
+            border-radius: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            position: relative;
+        }
+
+        .chat-message.right {
+            background-color: #2C2C2E;
+            color: white;
+            width: 80%;
+            float: right;
+            clear: both;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .chat-message.left {
+            background-color: #075e54;
+            color: white;   
+            width: 80%;
+            float: left;
+            clear: both;
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        .message-timestamp {
+            font-size: 10px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        .message-username {
+            font-size: 12px;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .left-panel {
+                width: 100%;
+            }
+
+            .right-panel {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .chat-menu {
+                width: 100%;
+                bottom: 0;
+                border-radius: 0;
+            }
+        }
+
+        .match-menu {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 360px;
+            background-color: rgb(46, 46, 46);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+        }
+        
+        .match_item_container {
+            background-color: #FF5864;
+            padding: 20px;
+            border-radius: 10px;
+            height: 300px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #FF5864 #f5f5f5;
+        }
+        
+        .match-item {
+            background-color: #2C2C2E;
+            color: white;
+            border-radius: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .match-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .match-item p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #CCC;
+        }
+        
+        .match-item button {
+            align-self: flex-end;
+            background-color: #075e54;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <a href="{% if user.is_authenticated %}{% url 'profile'%}{% else %}{% url 'registration' %}{% endif %}" class="profile-icon" id="profile">
+            <i class="bi bi-person"></i>
+        </a> 
+
+        <div class="line-separator"></div>
+        <nav>
+            <div class="nav-item">
+                <a href="#" id="matchMenu"class="text-decoration-none">Matches</a>
+            </div>
+            <div class="nav-item">
+                <a href="#" id="messageButton" class="text-decoration-none">Messages</a>
+            </div>
+        </nav>
+        <div class="line-separator"></div>
+        
+        <div class="chat-menu" id="chatMenu">
+            <div class="chat-header d-flex justify-content-between">
+                <button id="closeChatButton" class="btn btn-danger btn-sm">Close</button>
+            </div>
+            <div class="chat__item__container" id="id_chat_item_container">
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="id_message_send_input" class="form-control" placeholder="Type a message...">
+                <button id="id_message_send_button" class="btn btn-primary">Send</button>
+            </div>
+        </div>
+
+        <div class="match-menu" id="matchesMenu">
+            <div class="match-header d-flex justify-content-between">
+                <button id="closeMatchButton" class="btn btn-danger btn-sm">Close</button>
+            </div>
+            <div class="match_item_container" id="id_match_item_container"></div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div id="feed">
+            {% for profile in profiles %}
+            <div class="main-card">
+                <img src="{{ profile.photo.url }}" alt="Profile Photo" style="width:100%; border-radius: 10px; margin-bottom: 10px;">
+                <h2>{{ profile.user.username }}</h2>
+                <p>Age: {{ profile.age }}</p>
+                <button class="like-button" data-profile-id="{{ profile.id }}">Like</button>
+                <button class="dislike-button" data-profile-id="{{ profile.id }}">Dislike</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+
+    <script>
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+
+        chatSocket.onopen = function () {
+            console.log("The connection was set up successfully!");
+        };
+
+        chatSocket.onclose = function () {
+            console.log("Connection closed.");
+        };
+
+        chatSocket.onerror = function (error) {
+            console.error("WebSocket error:", error);
+        };
+
+        document.getElementById('messageButton').addEventListener('click', function () {
+            document.getElementById('chatMenu').style.display = 'block';
+        });
+
+        document.getElementById('closeChatButton').addEventListener('click', function () {
+            document.getElementById('chatMenu').style.display = 'none';
+        });
+
+        document.querySelector("#id_message_send_input").onkeyup = function (e) {
+            if (e.keyCode === 13) {
+                document.querySelector("#id_message_send_button").click();
+            }
+        };
+
+        document.querySelector("#id_message_send_button").onclick = function () {
+            const messageInput = document.querySelector("#id_message_send_input").value;
+            const currentTime = new Date();
+            const time = currentTime.toLocaleTimeString();
+
+            chatSocket.send(JSON.stringify({
+                message: messageInput,
+                username: "{{ request.user.username }}",
+                time: time
+            }));
+
+            document.querySelector("#id_message_send_input").value = "";
+        };
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const messageContainer = document.querySelector("#id_chat_item_container");
+            const div = document.createElement("div");
+            div.className = (data.username === "{{ request.user.username }}") ? "chat-message right" : "chat-message left";
+            div.innerHTML = `<div class="message-content">
+                <span class="message-username">${data.username}</span>
+                <span class="message-text">${data.message}</span>
+                <span class="message-timestamp">${data.time}</span>
+            </div>`;
+            messageContainer.appendChild(div);
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        };
+
+        let lastProfileId = 0;
+
+            function loadProfiles() {
+                fetch(`/api/load_profiles/?last_id=${lastProfileId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const feed = document.getElementById('feed');
+                        data.profiles.forEach(profile => {
+                            const profileCard = document.createElement('div');
+                            profileCard.className = 'main-card';
+                            profileCard.innerHTML = `
+                                <img src="${profile.photo}" alt="Profile Photo" style="width:100%; border-radius: 10px; margin-bottom: 10px;">
+                                <h2>${profile.username}</h2>
+                                <p>Age: ${profile.age}</p>
+                                <button class="like-button" data-profile-id="${profile.id}">Like</button>
+                                <button class="dislike-button" data-profile-id="${profile.id}">Dislike</button>
+                            `;
+                            feed.appendChild(profileCard);
+                            lastProfileId = profile.id;
+                        });
+                    })
+                    .catch(error => console.error('Error loading profiles:', error));
+            }
+
+            const rightPanel = document.querySelector('.right-panel');
+            rightPanel.addEventListener('scroll', () => {
+                if (rightPanel.scrollTop + rightPanel.clientHeight >= rightPanel.scrollHeight) {
+                    loadProfiles();
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadProfiles();
+            });
+
+            // Event listener to open the Matches Menu
+            document.getElementById('matchMenu').addEventListener('click', function () {
+                document.getElementById('matchesMenu').style.display = 'block';
+            });
+
+        // Event listener to close the Matches Menu
+        document.getElementById('closeMatchButton').addEventListener('click', function () {
+            document.getElementById('matchesMenu').style.display = 'none';
+        });
+        {% comment %}
+        function loadMatches() {
+            fetch('/matches/')
+                .then(response => response.json())
+                .then(data => {
+                    const matchContainer = document.getElementById('id_match_item_container');
+                    matchContainer.innerHTML = ''; 
+
+                    data.matches.forEach(match => {
+                        const matchItem = document.createElement('div');
+                        matchItem.className = 'match-item';
+                        matchItem.innerHTML = `
+                            <h3>${match.name}</h3>
+                            <p>${match.bio}</p>
+                            <button onclick="startChat(${match.id})">Start Chat</button>
+                        `;
+                        matchContainer.appendChild(matchItem);
+                    });
+                })
+                .catch(error => console.error('Error loading matches:', error));
+        }
+
+        function startChat(matchId) {
+            console.log(`Starting chat with match ID: ${matchId}`);
+        } {% endcomment %}
+    </script>
+</body>
+</html>

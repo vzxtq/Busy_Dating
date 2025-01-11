@@ -1,0 +1,14 @@
+db.sqlite3
+
+.env
+
+__pycache__/
+*.pyc
+
+*.sqlite3
+
+staticfiles/
+media/
+
+*.log
+logs/

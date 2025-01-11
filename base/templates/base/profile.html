@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #1c1c1c;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 50px;
+            color: #fff;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 960px;
+            background-color: #2d2d2d;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            padding: 30px;
+            background-color: #212121;
+            color: white;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .logoutDiv {
+            margin: auto;
+        }
+
+        .profile-pic-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #333;
+            margin-right: 20px;
+        }
+
+        .profile-info h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-left: 10px;
+        }
+
+        .profile-info p {
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.8);
+            margin:10px;
+        }
+
+        .logout-btn {
+        display: inline-block;
+        font-size: 14px;
+        color: white;
+        text-decoration: none;
+        background-color: #444;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        }
+
+        .photo-gallery-section {
+            padding: 20px;
+            border-top: 1px solid #444;
+        }
+
+        .photo-gallery-section h3 {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-gallery img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .photo-gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .add-photo-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #444;
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-photo-btn:hover {
+            background-color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-pic {
+                width: 100px;
+                height: 100px;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-header {
+                padding: 20px;
+            }
+
+            .profile-info h1 {
+                font-size: 24px;
+            }
+
+            .photo-gallery {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .home-button {
+            margin-right: auto; /* Push the button to the far left */
+        }
+        
+        .home-link {
+            display: inline-block;
+            font-size: 14px;
+            color: white;
+            text-decoration: none;
+            background-color: #444;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .home-link:hover {
+            background-color: #333;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="home-button">
+                <a href="/" class="home-link">HOME</a>
+            </div>
+            <div class="profile-pic-container">
+                <img src="{{ user.profile.photo.url }}" alt="Profile Picture" class="profile-pic">
+            </div>
+            <div class="profile-info">
+                <h1>{{ user.username }}</h1>
+                <p>Email: {{ user.email }}</p>
+                <p>Age: {{ user.profile.age }}</p>
+            </div>
+            <div class="logoutDiv">
+            <form action="{% url 'logout' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+            </div>
+        </div>
+        <div class="photo-gallery-section">
+            <h3>Photo Gallery</h3>
+            <div class="photo-gallery">
+            {% if user.profile.AdditionalPhotos.all %}
+                {% for profilePhotos in user.profile.AdditionalPhotos.all %}
+                    <img src="{{ user.photo.profilePhotos.url }}" alt="Gallery Photo">
+                {% endfor %}
+             {% else %}
+                <div class="add-photo-btn">
+                    <span>No photos yet. Click to add!</span>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+
+        <div id="addPhotoButton" class="add-photo-btn">
+            <span>Add More Photos</span>
+        </div>
+        <input type="file" name="profilePhotos" id="fileInput" accept="image/*" multiple style="display: none;">
+    </div>
+
+    <script>
+        const addPhotoButton = document.getElementById('addPhotoButton');
+        const fileInput = document.getElementById('fileInput');
+    
+        // Trigger file input click when the add photo button is clicked
+        addPhotoButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+    
+        // Handle file input change event
+        fileInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+    
+            // Ensure files are selected
+            if (files.length === 0) {
+                console.log("No files selected.");
+                return;
+            }
+    
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append('profilePhotos', files[i]); // Use 'photos' as the key
+            }
+    
+            // Make the fetch request to upload photos
+            fetch('/upload_photos/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', // Add CSRF token for security
+                },
+                body: formData,
+            })
+            .then(response => {
+                // Check if the response is OK
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Debugging purpose
+    
+                // If upload is successful, add photos to the gallery
+                if (data.success && Array.isArray(data.profilePhotos)) {
+                    const gallery = document.querySelector('.photo-gallery');
+                    
+                    const placeholder = gallery.querySelector('.add-photo-btn');
+                    if (placeholder) {
+                        placeholder.remove();
+                    }
+                    // Append new images to the gallery
+                    data.profilePhotos.forEach(profilePhoto => {
+                        const img = document.createElement('img');
+                        img.src = profilePhoto.url;
+                        img.style = "width: 100%; height: 150px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);";
+                        gallery.appendChild(img);
+                    });
+                } else {
+                    console.error("Unexpected response:", data);
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred while uploading photos:', error.message);
+                alert("Failed to upload photos. Please try again later.");
+            });
+        });
+    </script>
+    
+</body>
+</html>
