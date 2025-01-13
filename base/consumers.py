@@ -7,13 +7,15 @@ from asgiref.sync import sync_to_async
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.roomGroupName = "group_chat"
+        # Join the group
         await self.channel_layer.group_add(
             self.roomGroupName,
             self.channel_name
         )
         await self.accept()
-                 
+
     async def disconnect(self, close_code):
+        # Leave the group
         await self.channel_layer.group_discard(
             self.roomGroupName,
             self.channel_name
@@ -24,7 +26,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = text_data_json["message"]
         username = text_data_json["username"]
         time = text_data_json["time"]
-                
+
+        await self.save_message(username, message, time)
+
         await self.channel_layer.group_send(
             self.roomGroupName,
             {
@@ -34,14 +38,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'time': time
             }
         )
-        
+
     async def sendMessage(self, event):
         message = event['message']
         username = event['username']
         time = event['time']
-        
+
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
             'time': time
         }))
+    
+    @sync_to_async
+    def save_message(self, username, message, time):
+        user = User.objects.get(username=username)
+        Message.objects.create(user=user, content=message, timestamp=time)
