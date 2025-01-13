@@ -353,7 +353,7 @@
     
 
     <script>
-        const chatSocket = new WebSocket('wss://dating-for-all-a2d052d9c83b.herokuapp.com/');
+        const chatSocket = new WebSocket("wss://" + window.location.host + "/");
 
         chatSocket.onopen = function () {
             console.log("The connection was set up successfully!");
