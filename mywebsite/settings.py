@@ -75,6 +75,8 @@ TEMPLATES = [
     },
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ASGI_APPLICATION = 'mywebsite.asgi.application'
 
 CHANNEL_LAYERS = {
