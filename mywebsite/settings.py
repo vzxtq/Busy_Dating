@@ -37,13 +37,13 @@ ALLOWED_HOSTS = ['dating-for-all-a2d052d9c83b.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'daphne',
-    'django.contrib.staticfiles',
     'rest_framework',
     'base',
     'channels',
@@ -96,8 +96,7 @@ DATABASES = {
 
 # Use DATABASE_URL from Heroku if available
 DATABASES['default'] = dj_database_url.config(
-    default=os.getenv('DATABASE_URL', 'postgres://u8ge8v9n957eu2:pa8797a55d30543df8951557d98d16c8c2de5f7443658edead185023eb7a9e3cf@clhtb6lu92mj2.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d36k23c28adsd0'), 
-    conn_max_age=600,
+    default=os.getenv('postgres://u8ge8v9n957eu2:pa8797a55d30543df8951557d98d16c8c2de5f7443658edead185023eb7a9e3cf@clhtb6lu92mj2.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d36k23c28adsd0'),
     ssl_require=False
 )
 
