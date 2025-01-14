@@ -37,12 +37,12 @@ ALLOWED_HOSTS = ['dating-for-all-a2d052d9c83b.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'daphne',
     'rest_framework',
     'base',
