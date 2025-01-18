@@ -2,18 +2,30 @@ import json
 from django.http import JsonResponse
 from .models import Profile
 from .models import User
+from .models import Message, AdditionalPhoto
 
 def load_profiles(request):
     if request.method == 'GET':
         last_id = int(request.GET.get('last_id', 0))
         profiles = Profile.objects.filter(id__gt=last_id).exclude(user=request.user)[:10]
         
+        user_profile = request.user.profile
+        user_gender = user_profile.gender
+        
+        opposite_gender = 'F' if user_gender == 'M' else 'M'
+        
+        profiles= Profile.objects.filter(
+            id__gt=last_id,
+            gender=opposite_gender
+        ).exclude(user=request.user)[:10]
         profiles_data = [
             {
                 'id': profile.id,
                 'username': profile.user.username,
                 'photo': profile.photo.url,
                 'age': profile.age,
+                'bio': profile.bio,
+                'gender': profile.gender,
             }
             for profile in profiles
         ]
@@ -21,27 +33,17 @@ def load_profiles(request):
         return JsonResponse({'profiles': profiles_data})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-'''
-def like_profile(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            liked_id = data.get('liked_id')
-            liked_user = User.objects.get(id=liked_id)
-
-            like = Like.objects.create(liker=request.user, liked=liked_user)
-
-            mutual_like = Like.objects.filter(liker=liked_user, liked=request.user).exists()
-            if mutual_like:
-                Match.objects.create(user1=request.user, user2=liked_user)
-                return JsonResponse({'success': True, 'message': 'It\'s a match!'})
-
-            return JsonResponse({'success': True, 'message': 'Profile liked!'})
-
-        except User.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'User not found!'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-'''
+def load_messages(request):
+    if request.method == 'GET':
+        last_id = int(request.GET.get('last_id', 0))
+        messages = Message.objects.filter(id__gt=last_id).order_by('timestamp')[:50]
+        messages_data = [
+            {
+                'id': message.id,
+                'sender': message.sender.username,
+                'message': message.message,
+                'timestamp': message.timestamp,
+            }
+            for message in messages
+        ]
+        return JsonResponse({'messages': messages_data})
