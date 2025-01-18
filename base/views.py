@@ -6,87 +6,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout
 import json
 from django.contrib.auth.decorators import login_required
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from .models import AdditionalPhoto, Profile
-from django.db.models import Q
-from channels.generic.websocket import WebsocketConsumer
+from .models import AdditionalPhoto, Profile, Message
+from django.views.decorators.csrf import csrf_exempt
+
+from asgiref.sync import sync_to_async
 
 def home(request):
     return render(request, 'base/home.html')
-
-'''
-@login_required
-def like(request):
-        if request.method == 'POST':
-            try:
-                data = json.loads(request.body)
-                liked_id = data.get('liked_id')
-                liked_user = User.objects.get(id=liked_id)
-
-                like = Like.objects.create(liker=request.user, liked=liked_user)
-
-                mutual_like = Like.objects.filter(liker=liked_user, liked=request.user).exists()
-                if mutual_like:
-                    Match.objects.create(user1=request.user, user2=liked_user)
-                    return JsonResponse({'success': True, 'message': 'It\'s a match!'})
-
-                return JsonResponse({'success': True, 'message': 'Profile liked!'})
-
-            except User.DoesNotExist:
-                return JsonResponse({'success': False, 'message': 'User not found!'})
-            except Exception as e:
-                return JsonResponse({'success': False, 'message': str(e)})
-     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-'''
-@login_required
-def dislike(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            action = data.get('action')
-
-            if action == 'dislike':
-                print("User disliked the profile!")
-                return JsonResponse({'success': True, 'message': 'Profile disliked!'})
-            else:
-                return JsonResponse({'success': False, 'message': 'Invalid action!'})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-'''
-@login_required
-def matches(request):
-    user_matches = Match.objects.filter(Q(user1=request.user) | Q(user2=request.user))
-    matched_users = [
-        {
-            'username': match.user2.username if match.user1 == request.user else match.user1.username,
-            'age': match.user2.profile.age if match.user1 == request.user else match.user1.profile.age,
-        }
-        for match in user_matches
-    ]
-    return render(request, 'base/home.html', {'matches': matched_users})
-'''
-
-@login_required
-def message(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            action = data.get('action')
-
-            if action == 'message':
-                print("User sent a message!")
-                return JsonResponse({'success': True, 'message': 'Message sent!'})
-            else:
-                return JsonResponse({'success': False, 'message': 'Invalid action!'})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 def signup(request):
     if request.method == 'POST':
@@ -95,6 +21,8 @@ def signup(request):
         password1 = request.POST.get('password1', '')
         password2 = request.POST.get('password2', '')
         age = request.POST.get('age', '')
+        bio = request.POST.get('bio','')
+        gender = request.POST.get('gender', '')
         
         if password1 != password2:
             messages.error(request, 'Passwords do not match.')
@@ -108,7 +36,7 @@ def signup(request):
             user = User.objects.create_user(username=username, email=email, password=password1)
             user.save()
 
-            profile = Profile.objects.create(user=user, age=age)
+            profile = Profile.objects.create(user=user, age=age, bio=bio, gender=gender)
 
             if 'photo' in request.FILES:
                 profile.photo = request.FILES['photo']
@@ -145,25 +73,38 @@ def login(request):
             messages.error(request, 'Invalid username or password.')
     return render(request, 'base/login.html')
 
-def profile(request):
-    
+def profile(request): 
     context = {
         'user' : request.user,
         'csrf-token' : request.COOKIES.get('csrftoken')
     }
+    profile_photos = AdditionalPhoto.objects.filter(user=request.user)
+
     return render(request, 'base/profile.html', {'user': request.user})
 
 @login_required
 def chat_room(request):
-    
+    messages = Message.objects.order_by('-timestamp')
     return render(request, 'chat_room.html', {
         'username': request.user.username,
     })
+    
+@sync_to_async    
+def send_message(request):
+    if request.method == 'POST':
+        sender = request.user
+        text = request.POST.get('message', '')
+        if text:
+            message = Message.objects.create(sender=sender, text=text)
+            return JsonResponse({'user': sender.username, 'text': message.text, 'timestamp': message.timestamp})
+        else:
+            return JsonResponse({'error': 'Message cannot be empty'}, status=400)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 @login_required
 def upload_photos(request):
-    
-    if request.method == 'POST' and request.FILES.getlist('profilePhotos'):
+    if request.method == 'POST':
         uploaded_photos = []
         for file in request.FILES.getlist('profilePhotos'):
             photo = AdditionalPhoto.objects.create(user=request.user, profilePhotos=file)
@@ -173,7 +114,26 @@ def upload_photos(request):
 
 
 def profileLogout(request):
-    
     logout(request)
     
     return redirect('home')
+
+
+@csrf_exempt
+@login_required
+def delete_selected_photos(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            photo_ids = data.get('photo_ids', [])
+            
+            photos = AdditionalPhoto.objects.filter(id__in=photo_ids, user=request.user)
+            
+            for photo in photos:
+                photo.profilePhotos.delete()
+                photo.delete()
+
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
