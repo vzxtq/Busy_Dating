@@ -73,6 +73,7 @@ def login(request):
             messages.error(request, 'Invalid username or password.')
     return render(request, 'base/login.html')
 
+@csrf_exempt
 def profile(request): 
     context = {
         'user' : request.user,
@@ -103,6 +104,7 @@ def send_message(request):
 
 
 @login_required
+@csrf_exempt
 def upload_photos(request):
     if request.method == 'POST':
         uploaded_photos = []

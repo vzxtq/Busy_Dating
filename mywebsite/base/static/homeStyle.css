@@ -1,0 +1,374 @@
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        background-color: #F4F4F4;
+        height: 100vh;
+        overflow: hidden;
+    }
+    
+    .main-card {
+        width: 100% !important;
+        height: auto !important;
+        background-color: #2C2C2E;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    
+    .main-card h2 {
+        margin: 0 0 10px 0;
+        font-size: 27px !important;
+        color: #FFF;
+    }
+    
+    .main-card p {
+        margin: 0;
+        font-size: 20px !important;
+        line-height: 1.5;
+        color: #CCC;
+    }        
+
+    .left-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #FF5864;
+        padding: 20px;
+        width: 400px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .username {
+        display: flex;
+        align-items: center;
+        margin-left: 80px;
+        font-size: 16px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .profile-icon {
+        width: 60px;
+        height: 60px;
+        background-color: #FFFFFF;
+        color: #FF5864;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        cursor: pointer;
+        font-size: 24px;
+        margin-top: 20px;
+        margin-left: 15px;
+    }
+
+    .profile-pic {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+    }
+    
+    .line-separator {
+        width: 100%;
+        height: 2.5px;
+        background-color: #2C2C2E;
+        margin: 7px 0;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-item {
+        margin: 10px 0;
+    }
+
+    .nav-item a {
+        color: #FFFFFF;
+        font-size: 18px;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-item a:hover {
+        background-color: #2C2C2E;
+    }
+
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center !important;
+        margin-left: 420px;
+        background-color: #1C1C1E;
+        padding: 20px;
+        border-radius: 0px;
+        flex-grow: 1;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        color: #FFFFFF;
+        align-items: flex-start;
+    }       
+
+    .main-card {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto 20px auto;
+        background-color: #2C2C2E;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        box-sizing: border-box;
+    }     
+
+    .main-card img {
+        width: 100%;
+        max-height: 600px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    
+
+    .main-card h2 {
+        margin: 0 0 10px 0;
+        font-size: 24px;
+    }
+
+    .main-card p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .like-button, .dislike-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .like-button {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .like-button:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    .dislike-button {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .dislike-button:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+    }
+
+    .chat-menu {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: 360px;
+        background-color: rgb(46, 46, 46);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+        padding: 20px;
+        display: none;
+    }
+
+    .chat__item__container {
+        background-color: #FF5864;
+        padding: 20px;
+        border-radius: 10px;
+        height: 300px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #FF5864 #f5f5f5;
+    }
+
+    .chat-input-container {
+        padding-top: 15px ;
+        display: flex;
+        align-items: center;
+    }
+
+    #id_message_send_input {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 18px;
+    }
+
+    #id_message_send_button {
+        padding: 7px 11px;
+        background-color:rgb(20, 98, 207);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    .chat-message {
+        background-color: #e4f9f5;
+        max-width: 80%;
+        border-radius: 10px;
+        margin: 10px 0;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        padding: 10px;
+        position: relative;
+    }
+
+    .chat-message.right {
+        background-color: #2C2C2E;
+        color: white;
+        width: 80%;
+        float: right;
+        clear: both;
+        margin-left: auto;
+        margin-right: 0;
+    }
+
+    .chat-message.left {
+        background-color: #075e54;
+        color: white;   
+        width: 80%;
+        float: left;
+        clear: both;
+        margin-left: 0;
+        margin-right: auto;
+    }
+
+    .message-timestamp {
+        font-size: 12px;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+    .message-username {
+        color: rgb(90, 241, 255);
+        font-size: 12px;
+        position: absolute;
+        bottom: 5px;
+        right: 4px;
+    }
+
+    #closeChatButton {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: transparent !important;
+        border: none !important;
+        padding: 10px;
+    }
+
+    .btn i.bi-x {
+        font-size: 40px;
+        color:rgb(46, 46, 44) !important;
+        margin-right: 20px;
+    }
+    
+
+    @media (max-width: 768px) {
+        .left-panel {
+            width: 100%;
+        }
+
+        .right-panel {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .chat-menu {
+            width: 100%;
+            bottom: 0;
+            border-radius: 0;
+        }
+    }
+
+    .match-menu {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: 360px;
+        background-color: rgb(46, 46, 46);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+        padding: 20px;
+        display: none;
+    }
+    
+    .match_item_container {
+        background-color: #FF5864;
+        padding: 20px;
+        border-radius: 10px;
+        height: 300px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #FF5864 #f5f5f5;
+    }
+    
+    .match-item {
+        background-color: #2C2C2E;
+        color: white;
+        border-radius: 10px;
+        margin: 10px 0;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .match-item h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .match-item p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #CCC;
+    }
+    
+    .match-item button {
+        align-self: flex-end;
+        background-color: #075e54;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    
+    .username {
+        display: block;
+        text-align: center; 
+        margin-top: 10px; 
+        font-size: 16px;
+        color: #ffffff;
+        font-weight: bold;
+    }

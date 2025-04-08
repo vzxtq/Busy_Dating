@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busy-dating-deployment
+  labels:
+    app: busy-dating
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: busy-dating
+  template:
+    metadata:
+      labels:
+        app: busy-dating
+    spec:
+      containers:
+      - name: busy-dating
+        image: vpvl/busy-dating:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "300Mi"
+          limits:
+            memory: "400Mi"
